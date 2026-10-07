@@ -13,7 +13,7 @@ sudo ip route add default via 10.0.2.2 dev br-cloud
 ip a
 ip route
 brctl show
-ping 8.8.8.8
+ping 10.0.2.15
 
 ----------------------
 
