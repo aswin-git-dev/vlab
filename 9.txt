@@ -17,3 +17,9 @@ microstack.openstack network list
 microstack.openstack server create --flavor m1.tiny --image cirros --nic net-id=<NETWORK_ID> vm1
 microstack.openstack server list
 
+To Access the dashboard visit
+http://10.0.2.15/
+
+For Login : 
+Username : admin
+password : sudo snap get microstack config.credentials.keystone-password
