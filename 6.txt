@@ -1,17 +1,115 @@
-6) Shared Folder – Minimal Commands  
+6) FILE TRANSFER BETWEEN VIRTUAL MACHINES – MINIMAL COMMANDS
+==============================================================
 
-devices -> insert guest cd and shared folder setting add Win folders
+METHOD 1: VIRTUALBOX SHARED FOLDER
+----------------------------------
 
-ls /media
+1. In VirtualBox:
+   Devices -> Insert Guest Additions CD Image
+   Settings -> Shared Folders -> Add Windows folder
+   Select Auto-mount and save.
 
-sudo usermod -aG vboxsf $USER
+2. Check mounted folders:
+   ls /media
 
-sudo reboot
+3. Add current user to the shared-folder group:
+   sudo usermod -aG vboxsf $USER
 
-ls /media/sf_VMShared
+4. Reboot:
+   sudo reboot
 
-cp VM1.txt /media/sf_VMShared/
+5. List shared-folder files:
+   ls /media/sf_VMShared
 
-ls /media/sf_VMShared
+6. Copy a file into the shared folder:
+   cp VM1.txt /media/sf_VMShared/
 
-cat the all txt files
+7. Verify the copied file:
+   ls /media/sf_VMShared
+
+
+METHOD 2: SSH AND SCP
+---------------------
+
+VM1 = Server; VM2 = Client.
+
+1. On the server VM, install and start SSH:
+   sudo apt update
+   sudo apt install openssh-server -y
+   sudo systemctl enable --now ssh
+   sudo systemctl status ssh
+
+2. Find the server VM's IP address:
+   ip a
+
+3. If UFW is enabled, allow SSH:
+   sudo ufw allow 22/tcp
+
+4. From the client VM, connect to the server:
+   ssh ubuntu@192.168.56.103
+
+   Replace "ubuntu" with the server username and the IP with
+   the server VM's actual Host-only IP address.
+
+5. Copy a file from client VM to server VM:
+   scp file.txt ubuntu@192.168.56.103:/home/ubuntu/
+
+6. Copy a file from server VM to client VM:
+   scp ubuntu@192.168.56.103:/home/ubuntu/serverfile.txt /home/ubuntu/
+
+7. Verify:
+   ls -l
+   cat file.txt
+
+
+METHOD 3: FTP
+-------------
+
+VM1 = FTP Server; VM2 = FTP Client.
+
+1. On VM1, install and start the FTP server:
+   sudo apt update
+   sudo apt install vsftpd -y
+   sudo systemctl enable --now vsftpd
+
+2. Configure FTP:
+   sudo nano /etc/vsftpd.conf
+
+   Ensure these settings are present and uncommented:
+   anonymous_enable=NO
+   local_enable=YES
+   write_enable=YES
+   chroot_local_user=YES
+   allow_writeable_chroot=YES
+
+   Save and exit the editor.
+
+3. Restart the FTP service:
+   sudo systemctl restart vsftpd
+
+4. If UFW is enabled, allow FTP control traffic:
+   sudo ufw allow 21/tcp
+
+5. Find VM1's IP address:
+   ip a
+
+6. On VM2, install the FTP client:
+   sudo apt update
+   sudo apt install ftp -y
+
+7. Connect to VM1:
+   ftp 192.168.56.103
+
+   Enter VM1's username and password.
+
+8. Useful FTP commands:
+   ls                 List remote files
+   pwd                Show remote directory
+   cd folder          Change remote directory
+   get file.txt       Download from VM1 to VM2
+   put file.txt       Upload from VM2 to VM1
+   bye                Exit FTP
+
+9. Verify transferred files:
+   On VM2: ls -l
+   On VM1: ls -l
