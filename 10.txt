@@ -1,0 +1,28 @@
+10 - STORAGE VIRTUALITATION
+
+Storage->SATA-> Add 2 Disk 7Gb and 4GB.
+
+fdisk -l
+
+pvdisplay
+vgdisplay
+lvdisplay
+
+pvcreate /dev/sdb
+vgcreate ubuntu-vg /dev/sdb
+lvcreate -l 100%FREE -n data ubuntu-vg
+
+pvdisplay
+vgdisplay
+lvdisplay
+
+pvcreate /dev/sdc
+vgextend ubuntu-vg /dev/sdc
+lvextend -L +3G /dev/ubuntu-vg/data
+
+mkfs.ext4 /dev/ubuntu-vg/data
+resize2fs /dev/mapper/ubuntu--vg-data
+
+mkdir -p /mnt/data
+mount /dev/ubuntu-vg/data /mnt/data
+df -h
