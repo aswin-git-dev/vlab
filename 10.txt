@@ -2,27 +2,28 @@
 
 Storage->SATA-> Add 2 Disk 7Gb and 4GB.
 
-fdisk -l
+sudo fdisk -l
+sudo apt install lvm2 -y
 
-pvdisplay
-vgdisplay
-lvdisplay
+sudo pvdisplay
+sudo vgdisplay
+sudo lvdisplay
 
-pvcreate /dev/sdb
-vgcreate ubuntu-vg /dev/sdb
-lvcreate -l 100%FREE -n data ubuntu-vg
+sudo pvcreate /dev/sdb
+sudo vgcreate ubuntu-vg /dev/sdb
+sudo lvcreate -l 100%FREE -n data ubuntu-vg
 
-pvdisplay
-vgdisplay
-lvdisplay
+sudo pvdisplay
+sudo vgdisplay
+sudo lvdisplay
 
-pvcreate /dev/sdc
-vgextend ubuntu-vg /dev/sdc
-lvextend -L +3G /dev/ubuntu-vg/data
+sudo pvcreate /dev/sdc
+sudo vgextend ubuntu-vg /dev/sdc
+sudo lvextend -L +3G /dev/ubuntu-vg/data
 
-mkfs.ext4 /dev/ubuntu-vg/data
-resize2fs /dev/mapper/ubuntu--vg-data
+sudo mkfs.ext4 /dev/ubuntu-vg/data
+sudo resize2fs /dev/mapper/ubuntu--vg-data
 
-mkdir -p /mnt/data
-mount /dev/ubuntu-vg/data /mnt/data
+sudo mkdir -p /mnt/data
+sudo mount /dev/ubuntu-vg/data /mnt/data
 df -h
