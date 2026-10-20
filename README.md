@@ -4,6 +4,7 @@ wget https://tinyurl.com/virlab123
 
 wget https://tiny.cc/virlab123
 
+wget https://tinyurl.com/virlab12
 
 sudo apt install python3-pip -y
 
